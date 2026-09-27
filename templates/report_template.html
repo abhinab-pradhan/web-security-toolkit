@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Security Assessment Report</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#64748b;--border:#e2e8f0}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.container{max-width:1100px;margin:auto;padding:32px 20px 60px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+.metric{font-size:28px;font-weight:800}.muted{color:var(--muted)}
+.high{border-left:6px solid #dc2626}.medium{border-left:6px solid #f97316}.low{border-left:6px solid #eab308}.info{border-left:6px solid #22c55e}
+.finding{margin:14px 0;padding:16px;background:#fff;border:1px solid var(--border);border-radius:10px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.high{background:#fee2e2;color:#991b1b;border:0}.badge.medium{background:#ffedd5;color:#9a3412;border:0}
+.badge.low{background:#fef9c3;color:#854d0e;border:0}.badge.info{background:#dcfce7;color:#166534;border:0}
+code{background:#eef2ff;padding:2px 5px;border-radius:4px}
+.meta{display:grid;grid-template-columns:180px 1fr;gap:6px 14px}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.meta{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Web Security Assessment Report</h1>
+<p class="muted">Web Security Assessment Toolkit v{{ report.tool.version }} — lightweight, authorized assessment.</p>
+
+<div class="card">
+<div class="meta">
+<strong>Target</strong><span>{{ report.target.input }}</span>
+<strong>Hostname</strong><span>{{ report.target.hostname }}</span>
+<strong>Scan time (UTC)</strong><span>{{ report.scan.timestamp_utc }}</span>
+<strong>Generated (UTC)</strong><span>{{ report.scan.generated_at_utc }}</span>
+</div>
+</div>
+
+<div class="grid">
+{% for severity in ["High","Medium","Low","Info"] %}
+<div class="card {{ severity|lower }}">
+<div class="muted">{{ severity }}</div>
+<div class="metric">{{ report.summary.severity_counts[severity] }}</div>
+</div>
+{% endfor %}
+</div>
+
+{% for category, findings in report.categories.items() %}
+<section>
+<h2>{{ category }}</h2>
+{% if not findings %}
+<div class="card muted">No findings were recorded in this category.</div>
+{% endif %}
+{% for f in findings %}
+<div class="finding">
+<span class="badge {{ f.severity|lower }}">{{ f.severity }}</span>
+<h3>{{ f.title }}</h3>
+<p>{{ f.description }}</p>
+<p><strong>Remediation:</strong> {{ f.remediation }}</p>
+{% if f.owasp %}<p><strong>OWASP Top 10:</strong> <code>{{ f.owasp }}</code></p>{% endif %}
+</div>
+{% endfor %}
+</section>
+{% endfor %}
+
+<h2>Raw Technical Data</h2>
+<div class="card"><pre style="white-space:pre-wrap;overflow:auto">{{ report.raw | tojson(indent=2) }}</pre></div>
+</div>
+</body>
+</html>
