@@ -1,8 +1,8 @@
-# Web Security Assessment Toolkit v2
+# Web Security Assessment Toolkit v3
 
 A modular Python CLI for a lightweight, authorized web security assessment.
 
-## What's improved in v2
+## What's improved in v3
 
 - Security headers are assessed primarily on the final HTTPS response.
 - HSTS is not incorrectly reported as missing from HTTP.
@@ -13,6 +13,35 @@ A modular Python CLI for a lightweight, authorized web security assessment.
 - Exposed-path results explicitly state that an HTTP 200 does not prove sensitive data disclosure.
 - TLS inspection failures are reported as informational inspection limitations rather than automatically treated as TLS vulnerabilities.
 - Reports retain raw technical data for manual validation.
+
+
+## 🔄 Version History
+
+### v1.0 — Initial Release
+- TCP port scanner for common ports
+- HTTP/HTTPS security header analysis
+- SSL/TLS certificate checks
+- JSON and HTML report generation
+- OWASP Top 10 mapping
+- CLI interface
+
+### v2.0 — Analysis Improvements
+- Reduced duplicate HTTP/HTTPS findings
+- HSTS checked only on HTTPS
+- Improved TLS certificate extraction
+- Improved exposed-path reporting
+- Improved HTTP → HTTPS detection
+- Cleaner report output
+
+### v3.0 — TLS & Validation Improvements
+- Fixed TLS hostname validation compatibility
+- Added SAN and hostname matching
+- Improved certificate parsing
+- Added negotiated TLS protocol detection
+- Improved self-signed certificate detection
+- Refined severity and remediation messages
+- Cleaner and more reliable security reports
+
 
 ## Installation
 
