@@ -4,15 +4,17 @@ A modular Python CLI for a lightweight, authorized web security assessment.
 
 ## What's improved in v3
 
-- Security headers are assessed primarily on the final HTTPS response.
-- HSTS is not incorrectly reported as missing from HTTP.
-- Duplicate HTTP/HTTPS header findings are removed.
-- HTTP is checked for HTTPS redirect behavior.
-- TLS certificate parsing uses Python/OpenSSL certificate decoding rather than relying on `getpeercert()` from an unverified TLS socket.
-- Open ports remain informational; they are not automatically presented as confirmed vulnerabilities.
-- Exposed-path results explicitly state that an HTTP 200 does not prove sensitive data disclosure.
-- TLS inspection failures are reported as informational inspection limitations rather than automatically treated as TLS vulnerabilities.
-- Reports retain raw technical data for manual validation.
+- Fixed TLS hostname validation compatibility for Python versions where `ssl.match_hostname` is unavailable.
+- TLS certificate information is now intended to populate instead of incorrectly returning `certificate: null` because of the removed helper.
+- Certificate expiry, issuer, subject, SANs, hostname matching, negotiated protocol, and self-signed heuristic are reported separately.
+- Deprecated TLS 1.0/1.1 checks remain best-effort and depend on the local OpenSSL build.
+- HTTP-to-HTTPS enforcement is now a **Low** configuration finding rather than automatically a Medium finding.
+- The HTTPS response remains the authoritative response for security-header checks.
+- HSTS is never assessed from the HTTP response.
+- Duplicate header findings are removed.
+- Open ports remain informational service-exposure results.
+- Exposed-path results explicitly state that HTTP 200 does not prove sensitive data disclosure.
+- TLS inspection failures remain informational inspection limitations.
 
 
 ## 🔄 Version History
@@ -83,6 +85,29 @@ Examples:
 - `.env` returning 200 → potentially serious exposure indicator that must be manually validated.
 - Certificate expiry → concrete TLS certificate condition.
 - TLS protocol support → dependent on local Python/OpenSSL capabilities.
+
+
+## Expected TLS output
+
+A successful TLS inspection should populate data similar to:
+
+```json
+{
+  "certificate": {
+    "not_after": "...",
+    "days_remaining": 60,
+    "issuer": "...",
+    "subject": "...",
+    "subject_alt_names": ["example.com"],
+    "hostname_matches": true,
+    "self_signed_heuristic": false,
+    "negotiated_protocol": "TLSv1.3",
+    "certificate_available": true
+  }
+}
+```
+
+Exact values depend on the target and the local Python/OpenSSL environment.
 
 ## OWASP Top 10 mappings
 
