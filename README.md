@@ -37,12 +37,11 @@ python3 main.py --target example.com --output report.json --format json
 Custom ports:
 
 ```bash
-python3 main.py \
-  --target example.com \
-  --ports 80,443,8080,8443 \
-  --timeout 5 \
-  --output report.html
+python3 main.py --target example.com --ports 80,443,8080,8443 --timeout 5 --output report.html
 ```
+The current toolkit is not scanning all 65,535 ports. It is currently doing a common-port scan, it scans only these 13 TCP ports:
+
+**[21, 22, 23, 25, 53, 80, 110, 143, 443, 3306, 3389, 8080, 8443]**
 
 ## Report interpretation
 
